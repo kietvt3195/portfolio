@@ -99,6 +99,14 @@ const TRANSLATIONS = {
     ct_box_title: "Kênh liên hệ trực tiếp",
     ct_upwork: "Hồ sơ Upwork →",
     ct_github: "Mã nguồn & Dự án →",
+    qb_title: "Gửi yêu cầu nhanh (1-Click)",
+    qb_opt1: "Landing Page bán hàng / dịch vụ",
+    qb_opt2: "Tự động hóa Excel / CSV / Python",
+    qb_opt3: "Web Tool / Bảng tính báo giá B2B",
+    qb_opt4: "Slide thuyết trình / Báo cáo PPTX",
+    qb_email: "Gửi Email Ngay",
+    qb_copy: "Copy gửi Zalo",
+    qb_copied: "Đã copy tóm tắt! Dán ngay vào Zalo 0394 507 842.",
     ct_note: "Hoàn tiền / điều chỉnh nếu sản phẩm không đúng cam kết ban đầu.",
     footer_note: "Thiết kế Web, Tự động hóa & Công cụ Kinh doanh Siêu tốc"
   },
@@ -190,6 +198,14 @@ const TRANSLATIONS = {
     ct_box_title: "Direct Contact Channels",
     ct_upwork: "Upwork Profile →",
     ct_github: "GitHub Repositories →",
+    qb_title: "Quick Project Brief (1-Click)",
+    qb_opt1: "Responsive Landing Page",
+    qb_opt2: "Excel / CSV / Python Automation",
+    qb_opt3: "Interactive Quote Calculator / Web Tool",
+    qb_opt4: "Executive Slide Deck (PPTX)",
+    qb_email: "Send via Email",
+    qb_copy: "Copy Brief",
+    qb_copied: "Brief copied! Paste into Email, Zalo, or Fiverr chat.",
     ct_note: "Clear milestones & prompt adjustments until the agreed scope works as promised.",
     footer_note: "Fast-Turnaround Web, Automation & Custom Tools"
   }
@@ -239,6 +255,14 @@ function setLanguage(lang) {
   document.querySelectorAll("[data-lang-badge]").forEach((pill) => {
     pill.classList.toggle("active", pill.getAttribute("data-lang-badge") === currentLang);
   });
+
+  const noteInput = document.getElementById("briefNote");
+  if (noteInput) {
+    noteInput.placeholder =
+      currentLang === "vi"
+        ? "VD: Cần trang giới thiệu xưởng + form Zalo trong 48h..."
+        : "e.g. Need a clean landing page or CSV cleaner within 48h...";
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -249,6 +273,40 @@ document.addEventListener("DOMContentLoaded", () => {
   if (toggleBtn) {
     toggleBtn.addEventListener("click", () => {
       setLanguage(currentLang === "vi" ? "en" : "vi");
+    });
+  }
+
+  const getBriefText = () => {
+    const svcEl = document.getElementById("briefService");
+    const svc = svcEl ? svcEl.options[svcEl.selectedIndex].textContent : "";
+    const note = (document.getElementById("briefNote")?.value || "").trim() || "(N/A)";
+    return currentLang === "vi"
+      ? `Chào Kiệt (Jerry Studio),\nMình cần tư vấn dịch vụ: ${svc}\nMô tả ngắn: ${note}\n(Từ Portfolio: ${window.location.href})`
+      : `Hi Kiet (Jerry Studio),\nI'm interested in: ${svc}\nBrief: ${note}\n(From Portfolio: ${window.location.href})`;
+  };
+
+  const btnEmail = document.getElementById("btnSendEmail");
+  if (btnEmail) {
+    btnEmail.addEventListener("click", () => {
+      const svcEl = document.getElementById("briefService");
+      const svc = svcEl ? svcEl.value : "Project Inquiry";
+      const subject = encodeURIComponent(`[Project Inquiry] ${svc}`);
+      const body = encodeURIComponent(getBriefText());
+      window.location.href = `mailto:${CONTACT_CONFIG.email}?subject=${subject}&body=${body}`;
+    });
+  }
+
+  const btnCopy = document.getElementById("btnCopyBrief");
+  if (btnCopy) {
+    btnCopy.addEventListener("click", async () => {
+      const toast = document.getElementById("briefToast");
+      const text = getBriefText();
+      try {
+        await navigator.clipboard.writeText(text);
+        if (toast) toast.textContent = TRANSLATIONS[currentLang].qb_copied;
+      } catch {
+        if (toast) toast.textContent = text;
+      }
     });
   }
 });
