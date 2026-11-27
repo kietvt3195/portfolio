@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo 1: VinaFlow Ops — B2B Landing Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f8fafc;
+      --ink: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --emerald: #059669;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; }
+    .demo-bar {
+      background: #0f172a; color: #e2e8f0; padding: 10px 20px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.85rem;
+    }
+    .demo-bar a { color: #34d399; font-weight: 600; text-decoration: none; }
+    .lang-switch { background: #1e293b; color: #fff; border: 1px solid #334155; padding: 5px 12px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+    .container { width: min(1100px, 92%); margin: 0 auto; }
+    nav.site-nav { border-bottom: 1px solid var(--border); padding: 16px 0; background: #fff; position: sticky; top: 0; z-index: 20; }
+    .nav-flex { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .logo { font-weight: 800; font-size: 1.15rem; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+    .logo-badge { background: var(--accent); color: #fff; width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-size: 0.9rem; }
+    .nav-cta { background: var(--accent); color: #fff; padding: 9px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+    .hero { padding: 72px 0 60px; background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%); text-align: center; }
+    .pill { display: inline-block; background: #dbeafe; color: #1e40af; padding: 5px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 700; margin-bottom: 18px; }
+    .hero h1 { font-size: clamp(2rem, 4.2vw, 3.1rem); font-weight: 800; letter-spacing: -0.03em; max-width: 780px; margin: 0 auto 16px; line-height: 1.15; }
+    .hero p { max-width: 620px; margin: 0 auto 28px; color: var(--muted); font-size: 1.05rem; }
+    .hero-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
+    .btn { padding: 13px 24px; border-radius: 10px; font-weight: 600; text-decoration: none; display: inline-block; cursor: pointer; border: none; font-size: 0.95rem; }
+    .btn-blue { background: var(--accent); color: #fff; }
+    .btn-blue:hover { background: var(--accent-dark); }
+    .btn-outline { background: #fff; color: var(--ink); border: 1px solid var(--border); }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 760px; margin: 0 auto; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: 0 8px 30px rgba(15, 23, 42, 0.05); }
+    .metrics strong { display: block; font-size: 1.5rem; color: var(--accent); }
+    .metrics span { font-size: 0.85rem; color: var(--muted); }
+    section { padding: 64px 0; }
+    .sec-head { text-align: center; max-width: 620px; margin: 0 auto 38px; }
+    .sec-head h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 8px; }
+    .sec-head p { color: var(--muted); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .box h3 { margin-bottom: 8px; font-size: 1.08rem; }
+    .box p { color: var(--muted); font-size: 0.92rem; }
+    .billing-toggle { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 30px; font-weight: 600; font-size: 0.92rem; }
+    .switch-track { width: 52px; height: 28px; background: var(--accent); border-radius: 999px; position: relative; cursor: pointer; border: none; }
+    .switch-thumb { width: 22px; height: 22px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform 0.2s ease; }
+    .switch-track.annual .switch-thumb { transform: translateX(24px); }
+    .save-tag { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; }
+    .price-box { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 26px; display: flex; flex-direction: column; }
+    .price-box.highlight { border: 2px solid var(--accent); box-shadow: 0 12px 32px rgba(37, 99, 235, 0.1); }
+    .amount { font-size: 2rem; font-weight: 800; margin: 10px 0; }
+    .amount small { font-size: 0.85rem; font-weight: 500; color: var(--muted); }
+    .list { list-style: none; margin: 14px 0 22px; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--muted); }
+    .list li::before { content: "✓ "; color: var(--emerald); font-weight: 700; }
+    .faq-list { max-width: 740px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .faq-item { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; }
+    .faq-q { width: 100%; text-align: left; background: none; border: none; padding: 16px 20px; font-weight: 700; font-size: 0.96rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--ink); }
+    .faq-a { padding: 0 20px 16px; color: var(--muted); font-size: 0.92rem; display: none; }
+    .faq-item.open .faq-a { display: block; }
+    .lead-sec { background: #0f172a; color: #fff; border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+    .lead-form { display: flex; flex-direction: column; gap: 12px; }
+    .lead-form input, .lead-form select { padding: 12px 14px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #fff; font-size: 0.94rem; }
+    .toast { display: none; margin-top: 10px; background: rgba(16, 185, 129, 0.16); border: 1px solid #10b981; color: #6ee7b7; padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; }
+    @media (max-width: 820px) {
+      .grid-3, .metrics, .lead-sec { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-bar">
+    <a href="../../index.html" data-t="back">← Quay lại Portfolio chính</a>
+    <span data-t="demoLabel">Demo 1: Landing Page B2B Chuyển Đổi Cao</span>
+    <button class="lang-switch" id="langBtn" type="button">VI / EN</button>
+  </div>
+
+  <nav class="site-nav">
+    <div class="container nav-flex">
+      <div class="logo"><span class="logo-badge">V</span> VinaFlow Ops</div>
+      <a href="#book" class="nav-cta" data-t="navCta">Đặt lịch tư vấn</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <span class="pill" data-t="pill">Dành cho SME, Xưởng sản xuất &amp; Cửa hàng bán lẻ</span>
+      <h1 data-t="heroH1">Quản lý đơn hàng, tồn kho &amp; báo giá trong một màn hình duy nhất</h1>
+      <p data-t="heroP">Loại bỏ cảnh thất lạc đơn hàng trên Zalo và file Excel rối rắm. Tự động hóa quy trình từ lúc khách hỏi giá đến khi xuất hóa đơn.</p>
+      <div class="hero-btns">
+        <a href="#book" class="btn btn-blue" data-t="cta1">Nhận bản dùng thử 14 ngày</a>
+        <a href="#pricing" class="btn btn-outline" data-t="cta2">Xem bảng giá</a>
+      </div>
+      <div class="metrics">
+        <div><strong>-65%</strong><span data-t="m1">Thời gian nhập liệu thủ công</span></div>
+        <div><strong>3 phút</strong><span data-t="m2">Lên xong 1 bảng báo giá PDF</span></div>
+        <div><strong>99.9%</strong><span data-t="m3">Đồng bộ tồn kho thời gian thực</span></div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <div class="sec-head">
+        <h2 data-t="featH2">3 lý do đội ngũ vận hành chọn VinaFlow</h2>
+        <p data-t="featP">Thiết kế tối giản để nhân viên mới làm quen trong 10 phút.</p>
+      </div>
+      <div class="grid-3">
+        <div class="box">
+          <h3 data-t="f1t">Báo giá chuẩn từng đồng</h3>
+          <p data-t="f1d">Cấu hình sẵn công thức chiết khấu, phí vận chuyển và VAT để nhân viên sales không bao giờ báo nhầm giá.</p>
+        </div>
+        <div class="box">
+          <h3 data-t="f2t">Cảnh báo tồn kho thấp</h3>
+          <p data-t="f2d">Tự động tô đỏ các mã hàng sắp hết và tổng hợp danh sách cần nhập thêm vào cuối mỗi ngày.</p>
+        </div>
+        <div class="box">
+          <h3 data-t="f3t">Báo cáo lãi lỗ tức thì</h3>
+          <p data-t="f3d">Xuất file Excel sạch hoặc xem biểu đồ doanh thu theo kênh bán hàng mà không cần chờ kế toán cuối tháng.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="sec-head">
+        <h2 data-t="priceH2">Gói triển khai linh hoạt</h2>
+        <p data-t="priceP">Chuyển đổi chu kỳ thanh toán để xem mức tiết kiệm.</p>
+      </div>
+      <div class="billing-toggle">
+        <span data-t="monthly">Trả theo tháng</span>
+        <button id="billSwitch" class="switch-track" type="button" aria-label="Toggle billing"><span class="switch-thumb"></span></button>
+        <span data-t="annual">Trả theo năm</span>
+        <span class="save-tag">-20%</span>
+      </div>
+      <div class="grid-3">
+        <div class="price-box">
+          <strong data-t="t1n">Cơ bản</strong>
+          <div class="amount" data-price-monthly="390k" data-price-annual="310k">390k <small data-t="perMo">/tháng</small></div>
+          <ul class="list">
+            <li data-t="t1a">Tối đa 3 tài khoản nhân viên</li>
+            <li data-t="t1b">1.000 đơn hàng / tháng</li>
+            <li data-t="t1c">Xuất báo cáo CSV/Excel</li>
+          </ul>
+          <a href="#book" class="btn btn-outline" style="margin-top:auto;text-align:center;" data-t="choose">Đăng ký ngay</a>
+        </div>
+        <div class="price-box highlight">
+          <strong style="color:var(--accent)" data-t="t2n">Tăng trưởng (Khuyên dùng)</strong>
+          <div class="amount" data-price-monthly="790k" data-price-annual="630k">790k <small data-t="perMo">/tháng</small></div>
+          <ul class="list">
+            <li data-t="t2a">10 tài khoản nhân viên &amp; phân quyền</li>
+            <li data-t="t2b">Không giới hạn đơn hàng &amp; báo giá PDF</li>
+            <li data-t="t2c">Tích hợp cảnh báo qua Zalo / Email</li>
+          </ul>
+          <a href="#book" class="btn btn-blue" style="margin-top:auto;text-align:center;" data-t="choose">Đăng ký ngay</a>
+        </div>
+        <div class="price-box">
+          <strong data-t="t3n">Doanh nghiệp</strong>
+          <div class="amount" data-price-monthly="1.5tr" data-price-annual="1.2tr">1.5tr <small data-t="perMo">/tháng</small></div>
+          <ul class="list">
+            <li data-t="t3a">Tùy biến công thức riêng theo xưởng</li>
+            <li data-t="t3b">Server riêng &amp; sao lưu hàng ngày</li>
+            <li data-t="t3c">Đào tạo trực tiếp cho đội ngũ</li>
+          </ul>
+          <a href="#book" class="btn btn-outline" style="margin-top:auto;text-align:center;" data-t="choose">Đăng ký ngay</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="sec-head">
+        <h2 data-t="faqH2">Câu hỏi thường gặp</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item open">
+          <button class="faq-q" type="button"><span data-t="q1">Tôi có thể nhập dữ liệu từ file Excel cũ lên không?</span><span>+</span></button>
+          <div class="faq-a" data-t="a1">Có. Chỉ cần tải file CSV hoặc Excel hiện có, hệ thống tự khớp cột và loại bỏ dòng trùng trong vài giây.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button"><span data-t="q2">Triển khai mất bao lâu?</span><span>+</span></button>
+          <div class="faq-a" data-t="a2">Gói tiêu chuẩn hoạt động ngay sau 24–48 giờ kể từ lúc chốt quy trình mẫu.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" type="button"><span data-t="q3">Nếu muốn hủy giữa chừng thì sao?</span><span>+</span></button>
+          <div class="faq-a" data-t="a3">Bạn luôn có thể xuất toàn bộ dữ liệu về máy dưới dạng Excel/CSV bất kỳ lúc nào, không ràng buộc hợp đồng dài hạn.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="book" style="padding-top: 10px;">
+    <div class="container">
+      <div class="lead-sec">
+        <div>
+          <h2 style="font-size:1.75rem;margin-bottom:10px;" data-t="bookH2">Nhận tư vấn &amp; Demo theo đúng ngành của bạn</h2>
+          <p style="color:#94a3b8;" data-t="bookP">Để lại thông tin bên cạnh — đội ngũ kỹ thuật sẽ chuẩn bị mẫu giao diện phù hợp trong vòng 24 giờ.</p>
+        </div>
+        <form id="leadForm" class="lead-form">
+          <input type="text" id="leadName" required placeholder="Họ và tên / Tên công ty" />
+          <input type="text" id="leadContact" required placeholder="Số Zalo hoặc Email liên hệ" />
+          <select id="leadPackage">
+            <option value="Standard">Gói Tăng trưởng (Phổ biến)</option>
+            <option value="Starter">Gói Cơ bản</option>
+            <option value="Enterprise">Gói Tùy biến riêng</option>
+          </select>
+          <button type="submit" class="btn btn-blue" data-t="submitBtn">Gửi yêu cầu dùng thử</button>
+          <div id="toast" class="toast"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const I18N = {
+      vi: {
+        back: "← Quay lại Portfolio chính",
+        demoLabel: "Demo 1: Landing Page B2B Chuyển Đổi Cao",
+        navCta: "Đặt lịch tư vấn",
+        pill: "Dành cho SME, Xưởng sản xuất & Cửa hàng bán lẻ",
+        heroH1: "Quản lý đơn hàng, tồn kho & báo giá trong một màn hình duy nhất",
+        heroP: "Loại bỏ cảnh thất lạc đơn hàng trên Zalo và file Excel rối rắm. Tự động hóa quy trình từ lúc khách hỏi giá đến khi xuất hóa đơn.",
+        cta1: "Nhận bản dùng thử 14 ngày",
+        cta2: "Xem bảng giá",
+        m1: "Thời gian nhập liệu thủ công",
+        m2: "Lên xong 1 bảng báo giá PDF",
+        m3: "Đồng bộ tồn kho thời gian thực",
+        featH2: "3 lý do đội ngũ vận hành chọn VinaFlow",
+        featP: "Thiết kế tối giản để nhân viên mới làm quen trong 10 phút.",
+        f1t: "Báo giá chuẩn từng đồng",
+        f1d: "Cấu hình sẵn công thức chiết khấu, phí vận chuyển và VAT để nhân viên sales không bao giờ báo nhầm giá.",
+        f2t: "Cảnh báo tồn kho thấp",
+        f2d: "Tự động tô đỏ các mã hàng sắp hết và tổng hợp danh sách cần nhập thêm vào cuối mỗi ngày.",
+        f3t: "Báo cáo lãi lỗ tức thì",
+        f3d: "Xuất file Excel sạch hoặc xem biểu đồ doanh thu theo kênh bán hàng mà không cần chờ kế toán cuối tháng.",
+        priceH2: "Gói triển khai linh hoạt",
+        priceP: "Chuyển đổi chu kỳ thanh toán để xem mức tiết kiệm.",
+        monthly: "Trả theo tháng",
+        annual: "Trả theo năm",
+        perMo: "/tháng",
+        t1n: "Cơ bản", t1a: "Tối đa 3 tài khoản nhân viên", t1b: "1.000 đơn hàng / tháng", t1c: "Xuất báo cáo CSV/Excel",
+        t2n: "Tăng trưởng (Khuyên dùng)", t2a: "10 tài khoản nhân viên & phân quyền", t2b: "Không giới hạn đơn hàng & báo giá PDF", t2c: "Tích hợp cảnh báo qua Zalo / Email",
+        t3n: "Doanh nghiệp", t3a: "Tùy biến công thức riêng theo xưởng", t3b: "Server riêng & sao lưu hàng ngày", t3c: "Đào tạo trực tiếp cho đội ngũ",
+        choose: "Đăng ký ngay",
+        faqH2: "Câu hỏi thường gặp",
+        q1: "Tôi có thể nhập dữ liệu từ file Excel cũ lên không?",
+        a1: "Có. Chỉ cần tải file CSV hoặc Excel hiện có, hệ thống tự khớp cột và loại bỏ dòng trùng trong vài giây.",
+        q2: "Triển khai mất bao lâu?",
+        a2: "Gói tiêu chuẩn hoạt động ngay sau 24–48 giờ kể từ lúc chốt quy trình mẫu.",
+        q3: "Nếu muốn hủy giữa chừng thì sao?",
+        a3: "Bạn luôn có thể xuất toàn bộ dữ liệu về máy dưới dạng Excel/CSV bất kỳ lúc nào, không ràng buộc hợp đồng dài hạn.",
+        bookH2: "Nhận tư vấn & Demo theo đúng ngành của bạn",
+        bookP: "Để lại thông tin bên cạnh — đội ngũ kỹ thuật sẽ chuẩn bị mẫu giao diện phù hợp trong vòng 24 giờ.",
+        submitBtn: "Gửi yêu cầu dùng thử",
+        toastOk: "Đã ghi nhận yêu cầu thử nghiệm (Demo Mode)! Cảm ơn "
+      },
+      en: {
+        back: "← Back to Main Portfolio",
+        demoLabel: "Demo 1: High-Converting B2B Landing Page",
+        navCta: "Book a Demo",
+        pill: "Built for SMEs, Workshops & Growing Retail Teams",
+        heroH1: "Manage Orders, Inventory & Quotes in One Clean Workspace",
+        heroP: "Stop losing customer quotes in chat threads and broken spreadsheets. Automate everything from inquiry to clean PDF invoices.",
+        cta1: "Start 14-Day Free Trial",
+        cta2: "View Pricing",
+        m1: "Less manual data entry",
+        m2: "To generate a PDF quote",
+        m3: "Real-time stock sync",
+        featH2: "Why Operations Teams Switch to VinaFlow",
+        featP: "Clean interface any team member can master in 10 minutes.",
+        f1t: "Error-Free Quoting",
+        f1d: "Pre-configure bulk discounts, shipping fees, and tax rules so your sales reps never miscalculate margins.",
+        f2t: "Low-Stock Alerts",
+        f2d: "Automatically highlight SKUs running low and compile daily restock lists with zero effort.",
+        f3t: "Instant Profit Reports",
+        f3d: "Export clean CSV/Excel sheets and view revenue charts by channel without waiting until month-end.",
+        priceH2: "Simple, Flexible Pricing",
+        priceP: "Toggle monthly vs. annual billing to preview savings.",
+        monthly: "Monthly",
+        annual: "Annual",
+        perMo: "/mo",
+        t1n: "Starter", t1a: "Up to 3 team seats", t1b: "1,000 orders / month", t1c: "Clean CSV/Excel export",
+        t2n: "Growth (Recommended)", t2a: "10 seats with role permissions", t2b: "Unlimited orders & PDF quotes", t2c: "Instant email & chat notifications",
+        t3n: "Enterprise", t3a: "Custom pricing formulas", t3b: "Dedicated backup & SLA", t3c: "Team onboarding session",
+        choose: "Get Started",
+        faqH2: "Frequently Asked Questions",
+        q1: "Can I import my existing Excel spreadsheets?",
+        a1: "Yes. Upload any CSV/Excel export and our cleaner automatically maps columns and removes duplicates in seconds.",
+        q2: "How fast can we launch?",
+        a2: "Standard setups go live within 24–48 hours after confirming your workflow.",
+        q3: "Is there any lock-in?",
+        a3: "Never. Export all your records to standard CSV/Excel anytime with one click.",
+        bookH2: "Get a Tailored Demo for Your Workflow",
+        bookP: "Leave your details here—our team will prepare a matching preview within 24 hours.",
+        submitBtn: "Request Free Preview",
+        toastOk: "Demo request captured (Interactive Demo Mode)! Thank you, "
+      }
+    };
+
+    let lang = "vi";
+    let isAnnual = false;
+    const annualUsd = ["$15", "$29", "$59"];
+    const monthlyUsd = ["$19", "$39", "$75"];
+    const monthlyVi = ["390k", "790k", "1.5tr"];
+    const annualVi = ["310k", "630k", "1.2tr"];
+
+    function renderPrices() {
+      const els = document.querySelectorAll(".amount");
+      els.forEach((el, idx) => {
+        const val = lang === "vi"
+          ? (isAnnual ? annualVi[idx] : monthlyVi[idx])
+          : (isAnnual ? annualUsd[idx] : monthlyUsd[idx]);
+        el.innerHTML = `${val} <small>${I18N[lang].perMo}</small>`;
+      });
+    }
+
+    function applyLang(next) {
+      lang = next;
+      document.querySelectorAll("[data-t]").forEach((el) => {
+        const k = el.getAttribute("data-t");
+        if (I18N[lang][k]) el.textContent = I18N[lang][k];
+      });
+      document.getElementById("leadName").placeholder = lang === "vi" ? "Họ và tên / Tên công ty" : "Your Name / Company";
+      document.getElementById("leadContact").placeholder = lang === "vi" ? "Số Zalo hoặc Email liên hệ" : "Work Email or Phone";
+      renderPrices();
+    }
+
+    document.getElementById("langBtn").addEventListener("click", () => {
+      applyLang(lang === "vi" ? "en" : "vi");
+    });
+
+    document.getElementById("billSwitch").addEventListener("click", (e) => {
+      isAnnual = !isAnnual;
+      e.currentTarget.classList.toggle("annual", isAnnual);
+      renderPrices();
+    });
+
+    document.querySelectorAll(".faq-q").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        btn.parentElement.classList.toggle("open");
+      });
+    });
+
+    document.getElementById("leadForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("leadName").value.trim();
+      const toast = document.getElementById("toast");
+      toast.textContent = I18N[lang].toastOk + name + "!";
+      toast.style.display = "block";
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
