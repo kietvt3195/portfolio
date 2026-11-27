@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo 3: Interactive B2B Quote &amp; Cost Estimator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#0b1120; --card:#131c31; --border:rgba(148,163,184,0.18); --text:#f1f5f9; --muted:#94a3b8; --emerald:#10b981; --amber:#f59e0b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+    .demo-bar { background: #0f172a; border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 0.85rem; }
+    .demo-bar a { color: #34d399; font-weight: 600; text-decoration: none; }
+    .container { width: min(1120px, 94%); margin: 28px auto 60px; }
+    h1 { font-size: 1.75rem; margin-bottom: 6px; }
+    .sub { color: var(--muted); margin-bottom: 20px; font-size: 0.95rem; }
+    .preset-tabs { display: inline-flex; gap: 6px; background: var(--card); border: 1px solid var(--border); padding: 5px; border-radius: 12px; margin-bottom: 22px; }
+    .tab-btn { padding: 9px 16px; border-radius: 8px; border: none; background: transparent; color: var(--muted); font-weight: 600; cursor: pointer; font-size: 0.88rem; }
+    .tab-btn.active { background: var(--emerald); color: #042f1a; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .panel h3 { font-size: 1.05rem; margin-bottom: 16px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: flex; justify-content: space-between; font-size: 0.88rem; color: #cbd5e1; margin-bottom: 6px; font-weight: 600; }
+    input[type="range"] { width: 100%; accent-color: var(--emerald); }
+    select, input[type="number"] { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: #0f172a; color: #fff; font-size: 0.92rem; }
+    .checks { display: flex; flex-direction: column; gap: 8px; }
+    .check-row { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #cbd5e1; cursor: pointer; }
+    .quote-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-bottom: 16px; }
+    .quote-table th, .quote-table td { padding: 9px 6px; border-bottom: 1px solid var(--border); text-align: left; }
+    .quote-table th:last-child, .quote-table td:last-child { text-align: right; }
+    .totals { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; font-size: 0.92rem; }
+    .total-row { display: flex; justify-content: space-between; color: var(--muted); }
+    .total-row.grand { font-size: 1.3rem; font-weight: 800; color: var(--emerald); margin-top: 6px; }
+    .actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    .btn { padding: 11px 16px; border-radius: 9px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #1e293b; color: #fff; font-size: 0.9rem; }
+    .btn-primary { background: var(--emerald); color: #042f1a; border-color: transparent; }
+    .copy-msg { margin-top: 10px; font-size: 0.84rem; color: #6ee7b7; min-height: 20px; }
+    @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+    @media print {
+      body { background: #fff; color: #000; }
+      .demo-bar, .preset-tabs, .controls-panel, .actions, .copy-msg { display: none !important; }
+      .layout { grid-template-columns: 1fr; }
+      .panel { background: #fff; border: 1px solid #ccc; color: #000; }
+      .total-row, .quote-table td { color: #111; }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-bar">
+    <a href="../../index.html" data-t="back">← Quay lại Portfolio chính</a>
+    <span data-t="demoTitle">Demo 3: Bảng Tính Báo Giá Tự Động (B2B Quote Estimator)</span>
+    <button id="langBtn" class="btn" style="padding:5px 12px;font-size:0.8rem;" type="button">VI / EN</button>
+  </div>
+
+  <div class="container">
+    <h1 data-t="h1">Công Cụ Tính Báo Giá &amp; Vật Tư Thời Gian Thực</h1>
+    <p class="sub" data-t="sub">Chuyển đổi giữa 2 mô hình thực tế: Gia công khung bàn nhôm định hình 4040 / Cơ khí và Gói thiết kế Web &amp; Automation.</p>
+
+    <div class="preset-tabs">
+      <button id="tabMech" class="tab-btn active" type="button" data-t="tabMech">Khung Nhôm 4040 / Cơ khí</button>
+      <button id="tabWeb" class="tab-btn" type="button" data-t="tabWeb">Gói Web &amp; Automation</button>
+    </div>
+
+    <div class="layout">
+      <div class="panel controls-panel" id="controlsPanel"></div>
+
+      <div class="panel">
+        <h3 data-t="quoteHead">Bảng Chi Tiết Báo Giá (Bản nháp in PDF)</h3>
+        <table class="quote-table">
+          <thead>
+            <tr>
+              <th data-t="colItem">Hạng mục</th>
+              <th data-t="colQty">SL / Thông số</th>
+              <th data-t="colSub">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody id="quoteRows"></tbody>
+        </table>
+
+        <div class="totals">
+          <div class="total-row"><span data-t="lblSub">Tạm tính</span><strong id="valSub">0</strong></div>
+          <div class="total-row"><span data-t="lblDisc">Chiết khấu số lượng</span><strong id="valDisc" style="color:var(--amber)">0</strong></div>
+          <div class="total-row"><span data-t="lblVat">Thuế VAT (8%)</span><strong id="valVat">0</strong></div>
+          <div class="total-row grand"><span data-t="lblGrand">TỔNG CỘNG</span><span id="valGrand">0</span></div>
+        </div>
+
+        <div class="actions">
+          <button id="printBtn" class="btn btn-primary" type="button" data-t="btnPrint">In / Lưu Báo Giá PDF</button>
+          <button id="copyBtn" class="btn" type="button" data-t="btnCopy">Copy Tóm Tắt Báo Giá</button>
+        </div>
+        <div id="copyMsg" class="copy-msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let lang = "vi";
+    let mode = "mech";
+
+    const state = {
+      mech: { len: 1400, wid: 700, hei: 750, qty: 2, finish: "anodized", top: true, wheels: true, vat: true },
+      web: { pages: 5, tier: "standard", qty: 1, automation: true, bilingual: false, vat: false }
+    };
+
+    const T = {
+      vi: {
+        back: "← Quay lại Portfolio chính",
+        demoTitle: "Demo 3: Bảng Tính Báo Giá Tự Động (B2B Quote Estimator)",
+        h1: "Công Cụ Tính Báo Giá & Vật Tư Thời Gian Thực",
+        sub: "Chuyển đổi giữa 2 mô hình thực tế: Gia công khung bàn nhôm định hình 4040 / Cơ khí và Gói thiết kế Web & Automation.",
+        tabMech: "Khung Nhôm 4040 / Cơ khí",
+        tabWeb: "Gói Web & Automation",
+        quoteHead: "Bảng Chi Tiết Báo Giá (Bản nháp in PDF)",
+        colItem: "Hạng mục", colQty: "SL / Thông số", colSub: "Thành tiền",
+        lblSub: "Tạm tính", lblDisc: "Chiết khấu số lượng", lblVat: "Thuế VAT (8%)", lblGrand: "TỔNG CỘNG",
+        btnPrint: "In / Lưu Báo Giá PDF", btnCopy: "Copy Tóm Tắt Báo Giá",
+        copied: "Đã copy báo giá vào clipboard!"
+      },
+      en: {
+        back: "← Back to Main Portfolio",
+        demoTitle: "Demo 3: Interactive B2B Quote & Cost Estimator",
+        h1: "Real-Time BOM & B2B Quote Estimator",
+        sub: "Switch between two real-world presets: 4040 Aluminum Frame Fabrication and Web/Automation Service Packages.",
+        tabMech: "4040 Frame Fabrication",
+        tabWeb: "Web & Automation Package",
+        quoteHead: "Itemized Quote Breakdown (Print-Ready)",
+        colItem: "Line Item", colQty: "Spec / Qty", colSub: "Amount",
+        lblSub: "Subtotal", lblDisc: "Volume Discount", lblVat: "Tax / VAT (8%)", lblGrand: "ESTIMATED TOTAL",
+        btnPrint: "Print / Save PDF Quote", btnCopy: "Copy Quote Summary",
+        copied: "Quote summary copied to clipboard!"
+      }
+    };
+
+    function fmt(vnd) {
+      if (lang === "vi") return vnd.toLocaleString("vi-VN") + " đ";
+      return "$" + (vnd / 25000).toFixed(2);
+    }
+
+    function renderControls() {
+      const box = document.getElementById("controlsPanel");
+      if (mode === "mech") {
+        const s = state.mech;
+        box.innerHTML = `
+          <h3>${lang === "vi" ? "Thông số khung bàn nhôm 4040" : "4040 Frame Specifications"}</h3>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Chiều dài (mm)" : "Length (mm)"}</span><span>${s.len} mm</span></label>
+            <input type="range" min="800" max="2400" step="100" value="${s.len}" data-m="mech" data-k="len" />
+          </div>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Chiều rộng (mm)" : "Width (mm)"}</span><span>${s.wid} mm</span></label>
+            <input type="range" min="500" max="1200" step="50" value="${s.wid}" data-m="mech" data-k="wid" />
+          </div>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Chiều cao (mm)" : "Height (mm)"}</span><span>${s.hei} mm</span></label>
+            <input type="range" min="600" max="1000" step="50" value="${s.hei}" data-m="mech" data-k="hei" />
+          </div>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Bề mặt nhôm" : "Profile Finish"}</span></label>
+            <select data-m="mech" data-k="finish">
+              <option value="anodized" ${s.finish === "anodized" ? "selected" : ""}>Anodized Silver (Standard)</option>
+              <option value="black" ${s.finish === "black" ? "selected" : ""}>Matte Black (+15%)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Số lượng bàn (Giảm 5–10% khi >=3)" : "Quantity (5–10% bulk discount >=3)"}</span></label>
+            <input type="number" min="1" max="50" value="${s.qty}" data-m="mech" data-k="qty" />
+          </div>
+          <div class="checks">
+            <label class="check-row"><input type="checkbox" ${s.top ? "checked" : ""} data-m="mech" data-k="top" /> ${lang === "vi" ? "Kèm mặt bàn gỗ MDF chống ẩm 18mm" : "Include 18mm MDF Tabletop"}</label>
+            <label class="check-row"><input type="checkbox" ${s.wheels ? "checked" : ""} data-m="mech" data-k="wheels" /> ${lang === "vi" ? "Bộ 4 bánh xe chịu lực có khóa" : "4x Locking Heavy-Duty Casters"}</label>
+            <label class="check-row"><input type="checkbox" ${s.vat ? "checked" : ""} data-m="mech" data-k="vat" /> ${lang === "vi" ? "Xuất hóa đơn VAT 8%" : "Include 8% VAT"}</label>
+          </div>
+        `;
+      } else {
+        const s = state.web;
+        box.innerHTML = `
+          <h3>${lang === "vi" ? "Cấu hình Gói Dịch vụ Web & Tool" : "Web & Automation Scope"}</h3>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Số mục / màn hình chức năng" : "Sections / Views"}</span><span>${s.pages}</span></label>
+            <input type="range" min="1" max="12" step="1" value="${s.pages}" data-m="web" data-k="pages" />
+          </div>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Mức độ hoàn thiện" : "Delivery Tier"}</span></label>
+            <select data-m="web" data-k="tier">
+              <option value="starter" ${s.tier === "starter" ? "selected" : ""}>Starter (Static HTML/CSS)</option>
+              <option value="standard" ${s.tier === "standard" ? "selected" : ""}>Standard (Interactive + Form)</option>
+              <option value="pro" ${s.tier === "pro" ? "selected" : ""}>Pro (Custom Logic + Export)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label><span>${lang === "vi" ? "Số lượng gói / chi nhánh" : "Number of Packages / Sites"}</span></label>
+            <input type="number" min="1" max="10" value="${s.qty}" data-m="web" data-k="qty" />
+          </div>
+          <div class="checks">
+            <label class="check-row"><input type="checkbox" ${s.automation ? "checked" : ""} data-m="web" data-k="automation" /> ${lang === "vi" ? "Tích hợp script CSV/Excel tự động" : "Add CSV/Excel Automation Script"}</label>
+            <label class="check-row"><input type="checkbox" ${s.bilingual ? "checked" : ""} data-m="web" data-k="bilingual" /> ${lang === "vi" ? "Song ngữ Việt – Anh" : "Bilingual VI / EN Toggle"}</label>
+            <label class="check-row"><input type="checkbox" ${s.vat ? "checked" : ""} data-m="web" data-k="vat" /> ${lang === "vi" ? "Cộng thuế 8%" : "Include 8% VAT"}</label>
+          </div>
+        `;
+      }
+
+      box.querySelectorAll("input, select").forEach((el) => {
+        el.addEventListener("input", handleInput);
+        el.addEventListener("change", handleInput);
+      });
+    }
+
+    function handleInput(e) {
+      const m = e.target.getAttribute("data-m");
+      const k = e.target.getAttribute("data-k");
+      if (!m || !k) return;
+      if (e.target.type === "checkbox") state[m][k] = e.target.checked;
+      else if (e.target.type === "range" || e.target.type === "number") state[m][k] = Math.max(1, Number(e.target.value) || 1);
+      else state[m][k] = e.target.value;
+
+      if (e.target.type === "range") {
+        const labelVal = e.target.previousElementSibling.querySelector("span:last-child");
+        if (labelVal) labelVal.textContent = m === "mech" ? `${state[m][k]} mm` : state[m][k];
+      }
+      calculate();
+    }
+
+    let lastSummary = "";
+
+    function calculate() {
+      const rows = [];
+      let unitSubtotal = 0;
+      let qty = 1;
+      let useVat = false;
+
+      if (mode === "mech") {
+        const s = state.mech;
+        qty = s.qty;
+        useVat = s.vat;
+        const metersPerTable = ((4 * s.len + 4 * s.wid + 4 * s.hei) / 1000);
+        const ratePerMeter = s.finish === "black" ? 165000 : 145000;
+        const frameCost = Math.round(metersPerTable * ratePerMeter);
+        const bracketCost = 240000;
+        rows.push({
+          name: lang === "vi" ? "Nhôm định hình 4040 cắt sẵn" : "Cut-to-length 4040 Aluminum",
+          spec: `${metersPerTable.toFixed(2)} m × ${qty}`,
+          amt: frameCost * qty
+        });
+        rows.push({
+          name: lang === "vi" ? "Ke góc, con trượt & bulong lắp ráp" : "Corner Brackets & T-Nuts Kit",
+          spec: `16 sets × ${qty}`,
+          amt: bracketCost * qty
+        });
+        unitSubtotal += frameCost + bracketCost;
+
+        if (s.top) {
+          const area = (s.len / 1000) * (s.wid / 1000);
+          const topCost = Math.round(area * 420000);
+          rows.push({ name: lang === "vi" ? "Mặt bàn MDF 18mm" : "18mm MDF Tabletop", spec: `${area.toFixed(2)} m² × ${qty}`, amt: topCost * qty });
+          unitSubtotal += topCost;
+        }
+        if (s.wheels) {
+          const wheelCost = 180000;
+          rows.push({ name: lang === "vi" ? "Bộ 4 bánh xe khóa" : "4x Locking Casters", spec: `${qty} set`, amt: wheelCost * qty });
+          unitSubtotal += wheelCost;
+        }
+      } else {
+        const s = state.web;
+        qty = s.qty;
+        useVat = s.vat;
+        const baseMap = { starter: 450000, standard: 850000, pro: 1450000 };
+        const baseCost = baseMap[s.tier] + s.pages * 110000;
+        rows.push({ name: `Web Build (${s.tier.toUpperCase()})`, spec: `${s.pages} sections × ${qty}`, amt: baseCost * qty });
+        unitSubtotal += baseCost;
+
+        if (s.automation) {
+          const autoCost = 500000;
+          rows.push({ name: lang === "vi" ? "Script tự động hóa CSV/Excel" : "CSV/Excel Automation Script", spec: `${qty}x`, amt: autoCost * qty });
+          unitSubtotal += autoCost;
+        }
+        if (s.bilingual) {
+          const biCost = 300000;
+          rows.push({ name: lang === "vi" ? "Giao diện Song ngữ VI/EN" : "Bilingual VI/EN Switch", spec: `${qty}x`, amt: biCost * qty });
+          unitSubtotal += biCost;
+        }
+      }
+
+      const sub = unitSubtotal * qty;
+      const discRate = qty >= 5 ? 0.1 : qty >= 3 ? 0.05 : 0;
+      const disc = Math.round(sub * discRate);
+      const afterDisc = sub - disc;
+      const vat = useVat ? Math.round(afterDisc * 0.08) : 0;
+      const grand = afterDisc + vat;
+
+      document.getElementById("quoteRows").innerHTML = rows.map((r) => `
+        <tr><td>${r.name}</td><td>${r.spec}</td><td>${fmt(r.amt)}</td></tr>
+      `).join("");
+
+      document.getElementById("valSub").textContent = fmt(sub);
+      document.getElementById("valDisc").textContent = disc > 0 ? `-${fmt(disc)} (${discRate * 100}%)` : fmt(0);
+      document.getElementById("valVat").textContent = fmt(vat);
+      document.getElementById("valGrand").textContent = fmt(grand);
+
+      lastSummary = [
+        `=== ${mode === "mech" ? "4040 Frame Quote" : "Web & Automation Quote"} ===`,
+        ...rows.map((r) => `- ${r.name} (${r.spec}): ${fmt(r.amt)}`),
+        `Subtotal: ${fmt(sub)}`,
+        `Discount: -${fmt(disc)}`,
+        `VAT (8%): ${fmt(vat)}`,
+        `TOTAL: ${fmt(grand)}`
+      ].join("\n");
+    }
+
+    document.getElementById("tabMech").addEventListener("click", () => {
+      mode = "mech";
+      document.getElementById("tabMech").classList.add("active");
+      document.getElementById("tabWeb").classList.remove("active");
+      renderControls();
+      calculate();
+    });
+
+    document.getElementById("tabWeb").addEventListener("click", () => {
+      mode = "web";
+      document.getElementById("tabWeb").classList.add("active");
+      document.getElementById("tabMech").classList.remove("active");
+      renderControls();
+      calculate();
+    });
+
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(lastSummary);
+        document.getElementById("copyMsg").textContent = T[lang].copied;
+      } catch {
+        document.getElementById("copyMsg").textContent = lastSummary;
+      }
+    });
+
+    document.getElementById("langBtn").addEventListener("click", () => {
+      lang = lang === "vi" ? "en" : "vi";
+      document.querySelectorAll("[data-t]").forEach((el) => {
+        const k = el.getAttribute("data-t");
+        if (T[lang][k]) el.textContent = T[lang][k];
+      });
+      renderControls();
+      calculate();
+    });
+
+    renderControls();
+    calculate();
+  </script>
+</body>
+</html>
