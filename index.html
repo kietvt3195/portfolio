@@ -241,6 +241,23 @@
               <strong data-i18n="ct_github">Mã nguồn &amp; Dự án →</strong>
             </a>
           </div>
+
+          <div class="brief-box">
+            <div class="brief-title" data-i18n="qb_title">Gửi yêu cầu nhanh (1-Click)</div>
+            <select id="briefService" class="brief-input">
+              <option value="Landing Page (600k / $25–$50)" data-i18n="qb_opt1">Landing Page bán hàng / dịch vụ</option>
+              <option value="Excel / CSV / Python Automation (400k / $25–$50)" data-i18n="qb_opt2">Tự động hóa Excel / CSV / Python</option>
+              <option value="Interactive Quote Calculator / Web Tool (800k / $30–$95)" data-i18n="qb_opt3">Web Tool / Bảng tính báo giá B2B</option>
+              <option value="PPTX Slide Deck (350k / $25–$50)" data-i18n="qb_opt4">Slide thuyết trình / Báo cáo PPTX</option>
+            </select>
+            <input id="briefNote" type="text" class="brief-input" placeholder="VD: Cần trang giới thiệu xưởng + form Zalo trong 48h..." />
+            <div class="brief-actions">
+              <button id="btnSendEmail" type="button" class="btn btn-sm btn-primary" data-i18n="qb_email">Gửi Email Ngay</button>
+              <button id="btnCopyBrief" type="button" class="btn btn-sm btn-secondary" data-i18n="qb_copy">Copy gửi Zalo</button>
+            </div>
+            <div id="briefToast" class="brief-toast"></div>
+          </div>
+
           <p class="contact-note" data-i18n="ct_note">Hoàn tiền / điều chỉnh nếu sản phẩm không đúng cam kết ban đầu.</p>
         </div>
       </div>
