@@ -501,6 +501,54 @@ a {
   color: var(--muted);
 }
 
+.brief-box {
+  border-top: 1px solid var(--card-border);
+  padding-top: 14px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brief-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.brief-input {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: rgba(11, 17, 32, 0.75);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.86rem;
+}
+
+.brief-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.brief-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.brief-actions .btn {
+  flex: 1;
+}
+
+.brief-toast {
+  font-size: 0.8rem;
+  color: #6ee7b7;
+  min-height: 16px;
+}
+
 .footer {
   padding: 26px 0;
   border-top: 1px solid var(--card-border);
