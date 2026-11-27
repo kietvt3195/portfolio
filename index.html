@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jerry Studio — Web, Automation & Interactive Business Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#top" class="brand">
+        <span class="brand-dot"></span>
+        <span data-brand-name>Jerry Studio</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#demos" data-i18n="nav_demos">Demo thực tế</a>
+        <a href="#services" data-i18n="nav_services">Dịch vụ</a>
+        <a href="#pricing" data-i18n="nav_pricing">Bảng giá</a>
+        <a href="#contact" data-i18n="nav_contact">Liên hệ</a>
+      </nav>
+      <div class="nav-actions">
+        <button id="langToggle" class="lang-btn" type="button" aria-label="Switch language">
+          <span class="lang-pill active" data-lang-badge="vi">VI</span>
+          <span class="lang-pill" data-lang-badge="en">EN</span>
+        </button>
+        <a href="#contact" class="btn btn-sm btn-primary" data-i18n="nav_cta">Nhận báo giá</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="container hero-content">
+        <div class="badge" data-i18n="hero_badge">⚡ Có bản xem trước sau 24h • Bàn giao trọn gói 48–72h</div>
+        <h1 data-i18n="hero_title">Thiết kế Web, Tự động hóa Excel &amp; Công cụ Kinh doanh Siêu tốc</h1>
+        <p class="hero-sub" data-i18n="hero_sub">
+          Biến ý tưởng thô và bảng tính thủ công thành Landing Page chuyển đổi cao, script xử lý dữ liệu 1-click và công cụ báo giá tương tác — chi phí gọn nhẹ, xem demo thật trước khi chốt.
+        </p>
+        <div class="hero-ctas">
+          <a href="#demos" class="btn btn-primary" data-i18n="hero_cta_primary">Trải nghiệm 3 Demo chạy thật</a>
+          <a href="#pricing" class="btn btn-secondary" data-i18n="hero_cta_secondary">Xem bảng giá minh bạch</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <strong>24h</strong>
+            <span data-i18n="stat_1">Bản nháp xem trước</span>
+          </div>
+          <div class="stat-item">
+            <strong>100%</strong>
+            <span data-i18n="stat_2">Code sạch, không phí duy trì</span>
+          </div>
+          <div class="stat-item">
+            <strong>VI / EN</strong>
+            <span data-i18n="stat_3">Hỗ trợ song ngữ</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Interactive Demos -->
+    <section id="demos" class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="demos_eyebrow">SẢN PHẨM MẪU CHẠY THẬT</span>
+          <h2 data-i18n="demos_title">Bấm vào dùng thử ngay — Không phải ảnh tĩnh</h2>
+          <p data-i18n="demos_sub">Mỗi bản demo dưới đây hoạt động trực tiếp trên trình duyệt để bạn kiểm chứng chất lượng giao diện, tốc độ và logic xử lý.</p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card demo-card">
+            <div class="demo-tag emerald" data-i18n="demo1_tag">Landing Page</div>
+            <h3 data-i18n="demo1_title">Trang Bán Hàng &amp; Đặt Lịch B2B</h3>
+            <p data-i18n="demo1_desc">Giao diện thương mại hiện đại cho doanh nghiệp/studio: chuyển đổi giá Tháng/Năm, FAQ tương tác, đánh giá khách hàng và form nhận lead mượt mà.</p>
+            <ul class="mini-list">
+              <li data-i18n="demo1_f1">Chuẩn hiển thị điện thoại &amp; PC</li>
+              <li data-i18n="demo1_f2">Tải siêu nhanh, SEO-ready</li>
+            </ul>
+            <a href="./demos/landing-page/index.html" class="btn btn-primary full-btn" data-i18n="demo_open">Mở Demo Tương Tác →</a>
+          </article>
+
+          <article class="card demo-card">
+            <div class="demo-tag indigo" data-i18n="demo2_tag">Automation Tool</div>
+            <h3 data-i18n="demo2_title">Tool Làm Sạch CSV/Excel &amp; Báo Cáo</h3>
+            <p data-i18n="demo2_desc">Nạp file bán hàng lộn xộn: tự động lọc dòng trùng, chuẩn hóa tên sản phẩm, cảnh báo dữ liệu lỗi, vẽ biểu đồ doanh thu và xuất file sạch 1 click.</p>
+            <ul class="mini-list">
+              <li data-i18n="demo2_f1">Chạy ngay trên dữ liệu mẫu hoặc CSV thật</li>
+              <li data-i18n="demo2_f2">Thay thế hàng giờ copy-paste thủ công</li>
+            </ul>
+            <a href="./demos/excel-automation/index.html" class="btn btn-primary full-btn" data-i18n="demo_open">Mở Demo Tương Tác →</a>
+          </article>
+
+          <article class="card demo-card">
+            <div class="demo-tag amber" data-i18n="demo3_tag">Custom Web App</div>
+            <h3 data-i18n="demo3_title">Bảng Tính Báo Giá Tự Động (B2B)</h3>
+            <p data-i18n="demo3_desc">Hỗ trợ 2 chế độ: Gia công khung nhôm 4040 / Cơ khí &amp; Gói dịch vụ Web. Tự tính chiết khấu số lượng, thuế VAT và in báo giá PDF tức thì.</p>
+            <ul class="mini-list">
+              <li data-i18n="demo3_f1">Tính toán vật tư &amp; đơn giá thời gian thực</li>
+              <li data-i18n="demo3_f2">Xuất PDF &amp; copy tóm tắt gửi khách ngay</li>
+            </ul>
+            <a href="./demos/quote-calculator/index.html" class="btn btn-primary full-btn" data-i18n="demo_open">Mở Demo Tương Tác →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Services -->
+    <section id="services" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="srv_eyebrow">DỊCH VỤ TRỌNG TÂM</span>
+          <h2 data-i18n="srv_title">Giải pháp gọn nhẹ — Đánh thẳng vào hiệu quả</h2>
+        </div>
+
+        <div class="grid-2">
+          <div class="card service-card">
+            <div class="icon-box">🚀</div>
+            <div>
+              <h3 data-i18n="srv1_title">Landing Page Chuyển Đổi Cao</h3>
+              <p data-i18n="srv1_desc">Trang giới thiệu sản phẩm, dịch vụ, khóa học hoặc thu thập khách hàng tiềm năng. Bàn giao mã nguồn sạch, hỗ trợ đưa lên mạng miễn phí 0đ phí hosting.</p>
+            </div>
+          </div>
+
+          <div class="card service-card">
+            <div class="icon-box">📊</div>
+            <div>
+              <h3 data-i18n="srv2_title">Tự Động Hóa Excel / Google Sheets / Python</h3>
+              <p data-i18n="srv2_desc">Gộp nhiều file báo cáo, lọc trùng, chuẩn hóa số liệu, xuất biểu đồ và tự động hóa quy trình lặp lại hàng tuần chỉ với 1 nút bấm.</p>
+            </div>
+          </div>
+
+          <div class="card service-card">
+            <div class="icon-box">🧮</div>
+            <div>
+              <h3 data-i18n="srv3_title">Công Cụ Web Nội Bộ &amp; Báo Giá Online</h3>
+              <p data-i18n="srv3_desc">Xây dựng bảng tính giá nhanh cho đội sales, công cụ tính vật tư cho xưởng sản xuất/cơ khí, hoặc dashboard theo dõi KPI đơn giản.</p>
+            </div>
+          </div>
+
+          <div class="card service-card">
+            <div class="icon-box">📑</div>
+            <div>
+              <h3 data-i18n="srv4_title">Slide Thuyết Trình &amp; Hồ Sơ Năng Lực (PPTX)</h3>
+              <p data-i18n="srv4_desc">Thiết kế lại bài thuyết trình, pitch deck gọi vốn hoặc báo cáo tổng kết từ nội dung thô sang bộ slide đồng bộ, chỉnh sửa được 100%.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-i18n="price_eyebrow">BẢNG GIÁ MINH BẠCH</span>
+          <h2 data-i18n="price_title">Chi phí rõ ràng — Không phát sinh ẩn</h2>
+          <p data-i18n="price_sub">Xem trước bản nháp trang đầu hoặc test dữ liệu mẫu miễn phí trước khi chốt triển khai.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card price-card">
+            <div class="tier-name" data-i18n="p1_name">Khởi Động (Starter)</div>
+            <div class="tier-price" data-i18n="p1_price">500.000đ</div>
+            <p class="tier-desc" data-i18n="p1_desc">Phù hợp nhu cầu gọn nhẹ, cần gấp trong 24–48 giờ.</p>
+            <ul class="check-list">
+              <li data-i18n="p1_l1">Landing page 1 trang gọn hoặc sửa lỗi giao diện</li>
+              <li data-i18n="p1_l2">Hoặc script làm sạch 1 mẫu file Excel/CSV</li>
+              <li data-i18n="p1_l3">Hoặc bộ Slide 10–12 trang sạch đẹp</li>
+              <li data-i18n="p1_l4">1 lần chỉnh sửa theo góp ý</li>
+            </ul>
+            <a href="#contact" class="btn btn-secondary full-btn" data-i18n="price_btn">Chọn gói này</a>
+          </div>
+
+          <div class="card price-card featured">
+            <div class="popular-badge" data-i18n="p2_badge">Phổ biến nhất</div>
+            <div class="tier-name" data-i18n="p2_name">Tiêu Chuẩn (Standard)</div>
+            <div class="tier-price" data-i18n="p2_price">1.200.000đ</div>
+            <p class="tier-desc" data-i18n="p2_desc">Đầy đủ tính năng cho doanh nghiệp nhỏ &amp; chiến dịch bán hàng.</p>
+            <ul class="check-list">
+              <li data-i18n="p2_l1">Landing page hoàn chỉnh (5–6 mục + form + FAQ)</li>
+              <li data-i18n="p2_l2">Hoặc tool tự động hóa báo cáo + biểu đồ</li>
+              <li data-i18n="p2_l3">Responsive 100% mobile &amp; tối ưu tốc độ</li>
+              <li data-i18n="p2_l4">Hướng dẫn đưa lên mạng miễn phí + 2 lần sửa</li>
+            </ul>
+            <a href="#contact" class="btn btn-primary full-btn" data-i18n="price_btn">Chọn gói này</a>
+          </div>
+
+          <div class="card price-card">
+            <div class="tier-name" data-i18n="p3_name">Chuyên Nghiệp (Pro)</div>
+            <div class="tier-price" data-i18n="p3_price">2.200.000đ</div>
+            <p class="tier-desc" data-i18n="p3_desc">Dành cho công cụ báo giá tương tác hoặc quy trình tự động nâng cao.</p>
+            <ul class="check-list">
+              <li data-i18n="p3_l1">Web Tool / Bảng tính báo giá riêng theo công thức</li>
+              <li data-i18n="p3_l2">Xuất file PDF / CSV sạch chuẩn doanh nghiệp</li>
+              <li data-i18n="p3_l3">Hỗ trợ song ngữ Việt – Anh nếu cần</li>
+              <li data-i18n="p3_l4">Hỗ trợ kỹ thuật 14 ngày sau bàn giao</li>
+            </ul>
+            <a href="#contact" class="btn btn-secondary full-btn" data-i18n="price_btn">Chọn gói này</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process + Contact -->
+    <section id="contact" class="section section-alt">
+      <div class="container contact-wrap">
+        <div class="contact-info">
+          <span class="eyebrow" data-i18n="ct_eyebrow">BẮT ĐẦU NGAY</span>
+          <h2 data-i18n="ct_title">Gửi mô tả ngắn — Nhận phương án trong 2 giờ</h2>
+          <p data-i18n="ct_sub">Bạn chỉ cần mô tả mục tiêu hoặc gửi mẫu dữ liệu thô, mình sẽ lên phương án gọn nhất và gửi bản xem trước để bạn đánh giá.</p>
+
+          <div class="process-steps">
+            <div class="step-pill"><span>1</span> <em data-i18n="step_1">Gửi yêu cầu / file mẫu</em></div>
+            <div class="step-pill"><span>2</span> <em data-i18n="step_2">Xem trước bản nháp (24h)</em></div>
+            <div class="step-pill"><span>3</span> <em data-i18n="step_3">Bàn giao hoàn chỉnh &amp; HDSD</em></div>
+          </div>
+        </div>
+
+        <div class="card contact-card">
+          <h3 data-i18n="ct_box_title">Kênh liên hệ trực tiếp</h3>
+          <div class="contact-links">
+            <a id="linkZalo" href="#" target="_blank" rel="noopener noreferrer" class="contact-row">
+              <span class="c-label">Zalo / SĐT</span>
+              <strong id="textZalo">0900 000 000</strong>
+            </a>
+            <a id="linkEmail" href="mailto:hello@example.com" class="contact-row">
+              <span class="c-label">Email</span>
+              <strong id="textEmail">hello@example.com</strong>
+            </a>
+            <a id="linkUpwork" href="#" target="_blank" rel="noopener noreferrer" class="contact-row">
+              <span class="c-label">Upwork</span>
+              <strong data-i18n="ct_upwork">Hồ sơ Upwork →</strong>
+            </a>
+            <a id="linkGithub" href="#" target="_blank" rel="noopener noreferrer" class="contact-row">
+              <span class="c-label">GitHub</span>
+              <strong data-i18n="ct_github">Mã nguồn &amp; Dự án →</strong>
+            </a>
+          </div>
+          <p class="contact-note" data-i18n="ct_note">Hoàn tiền / điều chỉnh nếu sản phẩm không đúng cam kết ban đầu.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© 2026 <span data-brand-name>Jerry Studio</span></span>
+      <span data-i18n="footer_note">Fast-Turnaround Web, Automation &amp; Custom Tools</span>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
