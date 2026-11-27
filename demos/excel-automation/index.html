@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demo 2: CSV/Excel Auto-Cleaner &amp; Sales Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#0b1120; --card:#131c31; --border:rgba(148,163,184,0.18); --text:#f1f5f9; --muted:#94a3b8; --emerald:#10b981; --amber:#f59e0b; --rose:#f43f5e; --indigo:#6366f1; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+    .demo-bar { background: #0f172a; border-bottom: 1px solid var(--border); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 0.85rem; }
+    .demo-bar a { color: #34d399; font-weight: 600; text-decoration: none; }
+    .btn { padding: 10px 16px; border-radius: 8px; border: 1px solid var(--border); background: #1e293b; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.88rem; }
+    .btn:hover { border-color: var(--emerald); }
+    .btn-primary { background: var(--emerald); color: #042f1a; border-color: transparent; }
+    .btn-indigo { background: var(--indigo); color: #fff; border-color: transparent; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .container { width: min(1160px, 94%); margin: 28px auto 60px; }
+    h1 { font-size: 1.75rem; margin-bottom: 6px; }
+    .sub { color: var(--muted); margin-bottom: 22px; font-size: 0.95rem; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: var(--card); border: 1px solid var(--border); padding: 16px; border-radius: 14px; margin-bottom: 20px; }
+    .file-label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; border: 1px dashed #64748b; cursor: pointer; font-size: 0.88rem; color: #cbd5e1; }
+    .file-label input { display: none; }
+    .kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px; }
+    .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    .kpi span { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+    .kpi strong { font-size: 1.35rem; }
+    .grid-main { display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 18px; margin-bottom: 20px; }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
+    .panel h3 { font-size: 1rem; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .table-wrap { overflow-x: auto; max-height: 360px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--card); }
+    .tag { padding: 2px 8px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; }
+    .tag-ok { background: rgba(16,185,129,0.16); color: #6ee7b7; }
+    .tag-warn { background: rgba(244,63,94,0.18); color: #fda4af; }
+    .bar-list { display: flex; flex-direction: column; gap: 12px; }
+    .bar-row { font-size: 0.84rem; }
+    .bar-meta { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .bar-track { height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; background: linear-gradient(90deg, var(--emerald), var(--indigo)); border-radius: 999px; }
+    .log-box { font-size: 0.83rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; }
+    .log-item { padding: 7px 10px; background: rgba(255,255,255,0.03); border-radius: 8px; border-left: 3px solid var(--amber); }
+    .log-item.ok { border-left-color: var(--emerald); }
+    @media (max-width: 920px) { .kpis { grid-template-columns: repeat(2, 1fr); } .grid-main { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="demo-bar">
+    <a href="../../index.html" data-t="back">← Quay lại Portfolio chính</a>
+    <span data-t="demoTitle">Demo 2: Công cụ Làm sạch CSV/Excel &amp; Xuất Báo cáo Tự động</span>
+    <button id="langBtn" class="btn" style="padding:5px 12px;font-size:0.8rem;" type="button">VI / EN</button>
+  </div>
+
+  <div class="container">
+    <h1 data-t="h1">Làm Sạch Dữ Liệu Bán Hàng &amp; Tạo Báo Cáo 1-Click</h1>
+    <p class="sub" data-t="sub">Nạp dữ liệu mẫu lộn xộn (chứa dòng trùng, chữ hoa/thường lẫn lộn, ký tự tiền tệ lỗi, số âm) hoặc tải lên file .CSV của chính bạn để xem tool tự xử lý ngay.</p>
+
+    <div class="toolbar">
+      <button id="loadSampleBtn" class="btn btn-indigo" type="button" data-t="btnSample">1. Nạp dữ liệu mẫu lộn xộn</button>
+      <label class="file-label">
+        <span data-t="btnUpload">Hoặc chọn file .CSV từ máy</span>
+        <input id="csvInput" type="file" accept=".csv,text/csv" />
+      </label>
+      <button id="cleanBtn" class="btn btn-primary" type="button" disabled data-t="btnClean">2. Tự động Làm sạch &amp; Phân tích</button>
+      <button id="exportBtn" class="btn" type="button" disabled data-t="btnExport">3. Tải về CSV Sạch</button>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><span data-t="k1">Tổng dòng đầu vào</span><strong id="kpiTotal">0</strong></div>
+      <div class="kpi"><span data-t="k2">Đơn hợp lệ sau lọc</span><strong id="kpiValid" style="color:var(--emerald)">0</strong></div>
+      <div class="kpi"><span data-t="k3">Dòng trùng đã xóa</span><strong id="kpiDup" style="color:var(--amber)">0</strong></div>
+      <div class="kpi"><span data-t="k4">Dòng lỗi cần kiểm tra</span><strong id="kpiWarn" style="color:var(--rose)">0</strong></div>
+      <div class="kpi"><span data-t="k5">Tổng doanh thu hợp lệ</span><strong id="kpiRev">$0</strong></div>
+    </div>
+
+    <div class="grid-main">
+      <div class="panel">
+        <h3><span data-t="tblTitle">Xem trước dữ liệu</span><small id="tblMode" style="color:var(--muted);font-weight:500;"></small></h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>OrderID</th>
+                <th data-t="colProd">Sản phẩm</th>
+                <th data-t="colReg">Khu vực</th>
+                <th data-t="colAmt">Giá trị (USD)</th>
+                <th data-t="colStatus">Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:28px;" data-t="emptyMsg">Bấm "1. Nạp dữ liệu mẫu lộn xộn" để bắt đầu.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div class="panel">
+          <h3 data-t="chartTitle">Doanh thu theo Sản phẩm</h3>
+          <div id="chartBox" class="bar-list">
+            <span style="color:var(--muted);font-size:0.86rem;" data-t="chartEmpty">Chạy bước 2 để tạo biểu đồ tự động.</span>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 data-t="logTitle">Nhật ký xử lý tự động</h3>
+          <div id="logBox" class="log-box">
+            <span style="color:var(--muted);" data-t="logEmpty">Chưa có dữ liệu xử lý.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SAMPLE_CSV = `OrderID,Product,Region,Amount
+ORD-1001,  aluminum frame 4040 ,hanoi,$120.50
+ORD-1002,Landing Page Starter,HCMC, 250
+ORD-1001,  aluminum frame 4040 ,hanoi,$120.50
+ORD-1003,EXCEL AUTO SCRIPT,da nang,"$180.00"
+ORD-1004,aluminum frame 4040,Ha Noi,140
+ORD-1005,B2B Quote Tool,HCMC,320
+ORD-1006,landing page starter,hcmc, -45
+ORD-1007,  excel auto script ,HaNoi,195.5
+ORD-1005,B2B Quote Tool,HCMC,320
+ORD-1008,Aluminum Frame 4040,DaNang,
+ORD-1009,Pitch Deck PPTX,HCMC,150
+ORD-1010,  b2b quote tool,Ha Noi,$410
+ORD-1011,Landing Page Starter,DA NANG,260
+ORD-1012,Pitch Deck PPTX,hanoi,$165`;
+
+    const T = {
+      vi: {
+        back: "← Quay lại Portfolio chính",
+        demoTitle: "Demo 2: Công cụ Làm sạch CSV/Excel & Xuất Báo cáo Tự động",
+        h1: "Làm Sạch Dữ Liệu Bán Hàng & Tạo Báo Cáo 1-Click",
+        sub: "Nạp dữ liệu mẫu lộn xộn (chứa dòng trùng, chữ hoa/thường lẫn lộn, ký tự tiền tệ lỗi, số âm) hoặc tải lên file .CSV của chính bạn để xem tool tự xử lý ngay.",
+        btnSample: "1. Nạp dữ liệu mẫu lộn xộn",
+        btnUpload: "Hoặc chọn file .CSV từ máy",
+        btnClean: "2. Tự động Làm sạch & Phân tích",
+        btnExport: "3. Tải về CSV Sạch",
+        k1: "Tổng dòng đầu vào", k2: "Đơn hợp lệ sau lọc", k3: "Dòng trùng đã xóa", k4: "Dòng lỗi cần kiểm tra", k5: "Tổng doanh thu hợp lệ",
+        tblTitle: "Xem trước dữ liệu", colProd: "Sản phẩm", colReg: "Khu vực", colAmt: "Giá trị (USD)", colStatus: "Trạng thái",
+        emptyMsg: "Bấm \"1. Nạp dữ liệu mẫu lộn xộn\" để bắt đầu.",
+        chartTitle: "Doanh thu theo Sản phẩm", chartEmpty: "Chạy bước 2 để tạo biểu đồ tự động.",
+        logTitle: "Nhật ký xử lý tự động", logEmpty: "Chưa có dữ liệu xử lý.",
+        modeRaw: "Dữ liệu thô chưa xử lý", modeClean: "Đã chuẩn hóa & lọc trùng",
+        ok: "Hợp lệ", warn: "Cảnh báo lỗi"
+      },
+      en: {
+        back: "← Back to Main Portfolio",
+        demoTitle: "Demo 2: CSV / Excel Auto-Cleaner & Sales Report",
+        h1: "1-Click Sales CSV Cleaner & Analytics Generator",
+        sub: "Load messy sample exports (duplicates, inconsistent casing, currency symbols, negative/blank anomalies) or upload your own .CSV file.",
+        btnSample: "1. Load Messy Sample Data",
+        btnUpload: "Or Upload Your .CSV",
+        btnClean: "2. Auto-Clean & Generate Report",
+        btnExport: "3. Export Clean CSV",
+        k1: "Input Rows", k2: "Valid Orders", k3: "Duplicates Removed", k4: "Flagged Anomalies", k5: "Valid Revenue",
+        tblTitle: "Data Preview", colProd: "Product", colReg: "Region", colAmt: "Amount (USD)", colStatus: "Status",
+        emptyMsg: "Click \"1. Load Messy Sample Data\" to begin.",
+        chartTitle: "Revenue by Product", chartEmpty: "Run step 2 to render revenue chart.",
+        logTitle: "Automation Audit Log", logEmpty: "No operations run yet.",
+        modeRaw: "Raw Messy Input", modeClean: "Cleaned & Deduplicated",
+        ok: "Valid", warn: "Flagged"
+      }
+    };
+
+    let lang = "vi";
+    let rawRows = [];
+    let cleanedRows = [];
+
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const parseLine = (line) => {
+        const res = [];
+        let cur = "", inQ = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') { inQ = !inQ; }
+          else if (ch === ',' && !inQ) { res.push(cur.trim()); cur = ""; }
+          else { cur += ch; }
+        }
+        res.push(cur.trim());
+        return res;
+      };
+      const headers = parseLine(lines[0]);
+      return lines.slice(1).filter(Boolean).map((l) => {
+        const vals = parseLine(l);
+        return {
+          id: vals[0] || "",
+          product: vals[1] || "",
+          region: vals[2] || "",
+          amount: vals[3] || "",
+          rawLine: l
+        };
+      });
+    }
+
+    function titleCase(str) {
+      return str.trim().replace(/\s+/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+
+    function normalizeRegion(str) {
+      const s = str.trim().replace(/\s+/g, "").toLowerCase();
+      if (s === "hanoi") return "Ha Noi";
+      if (s === "hcmc" || s === "hochiminh") return "HCMC";
+      if (s === "danang") return "Da Nang";
+      return titleCase(str);
+    }
+
+    function renderRawTable() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = rawRows.map((r) => `
+        <tr>
+          <td>${r.id}</td>
+          <td>${r.product}</td>
+          <td>${r.region}</td>
+          <td>${r.amount || "<em>(blank)</em>"}</td>
+          <td><span class="tag" style="background:rgba(148,163,184,0.18);color:#cbd5e1;">RAW</span></td>
+        </tr>
+      `).join("");
+      document.getElementById("tblMode").textContent = T[lang].modeRaw;
+      document.getElementById("kpiTotal").textContent = rawRows.length;
+      document.getElementById("kpiValid").textContent = "—";
+      document.getElementById("kpiDup").textContent = "—";
+      document.getElementById("kpiWarn").textContent = "—";
+      document.getElementById("kpiRev").textContent = "—";
+    }
+
+    function runCleaner() {
+      const seen = new Set();
+      const logs = [];
+      let dupCount = 0, warnCount = 0, validRev = 0;
+      const byProduct = {};
+      cleanedRows = [];
+
+      rawRows.forEach((row) => {
+        const cleanId = row.id.trim().toUpperCase();
+        const cleanProd = titleCase(row.product);
+        const cleanReg = normalizeRegion(row.region);
+        const numStr = String(row.amount).replace(/[$,\s"]/g, "");
+        const amt = numStr === "" ? NaN : Number(numStr);
+
+        const key = `${cleanId}|${cleanProd}|${cleanReg}|${numStr}`;
+        if (seen.has(key)) {
+          dupCount++;
+          logs.push({ msg: `Removed duplicate: ${cleanId} (${cleanProd})`, ok: false });
+          return;
+        }
+        seen.add(key);
+
+        let status = "ok";
+        if (Number.isNaN(amt) || amt <= 0) {
+          status = "warn";
+          warnCount++;
+          logs.push({ msg: `Flagged anomaly on ${cleanId}: invalid amount "${row.amount || "blank"}"`, ok: false });
+        } else {
+          validRev += amt;
+          byProduct[cleanProd] = (byProduct[cleanProd] || 0) + amt;
+        }
+
+        cleanedRows.push({
+          id: cleanId,
+          product: cleanProd,
+          region: cleanReg,
+          amount: Number.isNaN(amt) ? 0 : amt,
+          status
+        });
+      });
+
+      logs.unshift({ msg: `Normalized whitespace & casing across ${rawRows.length} rows.`, ok: true });
+
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = cleanedRows.map((r) => `
+        <tr>
+          <td>${r.id}</td>
+          <td>${r.product}</td>
+          <td>${r.region}</td>
+          <td>$${r.amount.toFixed(2)}</td>
+          <td><span class="tag ${r.status === "ok" ? "tag-ok" : "tag-warn"}">${r.status === "ok" ? T[lang].ok : T[lang].warn}</span></td>
+        </tr>
+      `).join("");
+
+      const validCount = cleanedRows.filter((r) => r.status === "ok").length;
+      document.getElementById("tblMode").textContent = T[lang].modeClean;
+      document.getElementById("kpiTotal").textContent = rawRows.length;
+      document.getElementById("kpiValid").textContent = validCount;
+      document.getElementById("kpiDup").textContent = dupCount;
+      document.getElementById("kpiWarn").textContent = warnCount;
+      document.getElementById("kpiRev").textContent = `$${validRev.toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
+
+      const entries = Object.entries(byProduct).sort((a, b) => b[1] - a[1]);
+      const maxVal = entries.length ? entries[0][1] : 1;
+      document.getElementById("chartBox").innerHTML = entries.map(([name, val]) => `
+        <div class="bar-row">
+          <div class="bar-meta"><span>${name}</span><strong>$${val.toFixed(0)}</strong></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round((val / maxVal) * 100)}%"></div></div>
+        </div>
+      `).join("");
+
+      document.getElementById("logBox").innerHTML = logs.map((l) => `
+        <div class="log-item ${l.ok ? "ok" : ""}">${l.msg}</div>
+      `).join("");
+
+      document.getElementById("exportBtn").disabled = cleanedRows.length === 0;
+    }
+
+    document.getElementById("loadSampleBtn").addEventListener("click", () => {
+      rawRows = parseCSV(SAMPLE_CSV);
+      renderRawTable();
+      document.getElementById("cleanBtn").disabled = false;
+      document.getElementById("exportBtn").disabled = true;
+    });
+
+    document.getElementById("csvInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        rawRows = parseCSV(String(ev.target.result || ""));
+        if (rawRows.length) {
+          renderRawTable();
+          document.getElementById("cleanBtn").disabled = false;
+          document.getElementById("exportBtn").disabled = true;
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("cleanBtn").addEventListener("click", runCleaner);
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const lines = ["OrderID,Product,Region,AmountUSD,Status"];
+      cleanedRows.forEach((r) => {
+        lines.push(`"${r.id}","${r.product}","${r.region}",${r.amount.toFixed(2)},${r.status}`);
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "cleaned_sales_report.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("langBtn").addEventListener("click", () => {
+      lang = lang === "vi" ? "en" : "vi";
+      document.querySelectorAll("[data-t]").forEach((el) => {
+        const k = el.getAttribute("data-t");
+        if (T[lang][k]) el.textContent = T[lang][k];
+      });
+      if (cleanedRows.length) runCleaner();
+      else if (rawRows.length) renderRawTable();
+    });
+  </script>
+</body>
+</html>
